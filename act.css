@@ -1,0 +1,434 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    background: #0b1033;              /* calm dark blue for Sleep Mode (shows if the picture is missing) */
+    font-family: Arial, Helvetica, sans-serif;
+    transition: background 1.5s ease-in-out;
+}
+
+/* dark magical purple for Powers Mode */
+body.on {
+    background: #2a0f2e;
+}
+
+/* ---------- SCENE ---------- */
+.scene {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #0b1033 url("images/Game\ background.jpg") center bottom / cover no-repeat;   /* forest background */
+    transition: background-color 1.5s ease-in-out;
+}
+
+body.on .scene {
+    background-color: #2a0f2e;
+}
+
+/* color tint on top of the background picture (blue = night, purple/orange = magic) */
+.scene::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 14, 70, 0.62);            /* night blue for Sleep Mode */
+    z-index: 0;
+    pointer-events: none;
+    transition: background 1.5s ease-in-out;
+}
+
+body.on .scene::before {
+    background: rgba(60, 12, 70, 0.42);           /* magical purple for Powers Mode */
+}
+
+/* box that holds the wizard, rocks, fire and glow */
+.stage {
+    position: relative;
+    height: 80vh;
+    aspect-ratio: 1 / 1;              /* both wizard images are square */
+    z-index: 1;
+}
+
+/* ---------- WIZARD ---------- */
+/* both pictures sit on top of each other, the mode decides which one is visible */
+.wizard {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    transition: opacity 1.2s ease-in-out, filter 1.5s ease-in-out;
+    z-index: 2;
+}
+
+/* resting wizard (Sleep Mode) - slow breathing */
+.wizard_rest {
+    opacity: 1;
+    filter: brightness(0.85) saturate(0.9);
+    transform-origin: 50% 90%;
+    animation: breathe 3.4s ease-in-out infinite;
+}
+
+.on .wizard_rest {
+    opacity: 0;
+}
+
+/* powers wizard (Powers Mode) */
+.wizard_power {
+    opacity: 0;
+    filter: brightness(1.15) saturate(1.2);
+    animation: bob 2.4s steps(4) infinite;
+}
+
+.on .wizard_power {
+    opacity: 1;
+}
+
+@keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-0.6vh); }
+}
+
+@keyframes breathe {
+    0%, 100% { transform: scale(1, 1); }
+    50%      { transform: scale(1.01, 1.025); }
+}
+
+/* ---------- SLEEPING Z's ---------- */
+.zzz {
+    position: absolute;
+    left: 63%;
+    top: 24%;
+    width: 0;
+    height: 0;
+    z-index: 3;
+    transition: opacity 0.6s ease;
+}
+
+.on .zzz {
+    opacity: 0;
+}
+
+.zzz span {
+    position: absolute;
+    left: var(--x);
+    top: 0;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    font-size: var(--fs);
+    color: #cfd8ff;
+    text-shadow: 0 0 1vh rgba(160, 180, 255, 0.8);
+    opacity: 0;
+    animation: zfloat 3.6s ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+@keyframes zfloat {
+    0%   { opacity: 0;   transform: translate(0, 0) scale(0.6); }
+    25%  { opacity: 1; }
+    100% { opacity: 0;   transform: translate(4vh, -9vh) scale(1.2); }
+}
+
+/* ---------- AURA ---------- */
+.aura {
+    position: absolute;
+    inset: -10%;
+    background: radial-gradient(circle, rgba(255, 120, 20, 0.35) 0%, rgba(160, 60, 220, 0.18) 40%, transparent 70%);
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+    z-index: 0;
+}
+
+.on .aura {
+    opacity: 1;
+}
+
+/* ---------- FLOATING ROCKS (behind the wizard) ---------- */
+.rocks {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.rock {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--s);
+    height: var(--s);
+    opacity: 0;
+    transform: translateY(6vh) scale(0.3);        /* sunk down while powers are OFF */
+    transition: opacity 0.8s ease, transform 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transition-delay: 0s;
+}
+
+.on .rock {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: var(--delay);               /* rocks rise one after another */
+}
+
+/* the rock shape + floating animation */
+.rock i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #6b6f7e;
+    clip-path: polygon(0 25%, 25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%);   /* chunky pixel-style corners */
+    box-shadow: inset 0.35vh 0.35vh 0 #a3a9bf, inset -0.35vh -0.35vh 0 #3d4050;
+    animation: float var(--dur) ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(var(--amp)) rotate(var(--rot)); }
+}
+
+/* ---------- FIRE IN HANDS ---------- */
+.fire {
+    position: absolute;
+    width: 0;
+    height: 0;
+    z-index: 3;
+    mix-blend-mode: screen;
+    animation: bob 2.4s steps(4) infinite;       /* moves together with the wizard */
+}
+
+/* position of each hand (percent of the image) - change these if you want to adjust */
+.fire_right {
+    left: 75%;
+    top: 43%;
+}
+
+.fire_left {
+    left: 41%;
+    top: 61%;
+}
+
+/* glowing fire core */
+.fire::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6vh;
+    height: 6vh;
+    transform: translate(-50%, -50%) scale(0);
+    background: radial-gradient(circle, #fff3a0 0%, #ffb02e 30%, rgba(255, 90, 20, 0.6) 55%, transparent 72%);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.on .fire::before {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    animation: flicker 0.25s steps(2) infinite;
+}
+
+@keyframes flicker {
+    0%   { transform: translate(-50%, -50%) scale(1); }
+    100% { transform: translate(-50%, -50%) scale(1.15); }
+}
+
+/* little pixel flames that rise from the hands (made by JS) */
+.ember {
+    position: absolute;
+    top: 0;
+    width: var(--size);
+    height: var(--size);
+    background: var(--color);
+    box-shadow: 0 0 1vh var(--color);
+    pointer-events: none;
+    animation: rise var(--dur) ease-out forwards;
+}
+
+@keyframes rise {
+    0%   { transform: translate(-50%, 0) scale(1);   opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--dx)), var(--dy)) scale(0.2); opacity: 0; }
+}
+
+/* ---------- FLASH EFFECT ---------- */
+.flash {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 6;
+}
+
+.flash.animate {
+    animation: flash 0.8s ease-out;
+}
+
+@keyframes flash {
+    0%   { opacity: 0; }
+    30%  { opacity: 0.7; }
+    100% { opacity: 0; }
+}
+
+/* ---------- TITLE ---------- */
+.title {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #cfd8ff;                   /* soft light blue for Sleep Mode */
+    font-size: 3rem;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+    z-index: 5;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: color 1.5s ease-in-out;
+}
+
+/* fiery title color for Powers Mode */
+.on .title {
+    color: #ffb02e;
+}
+
+.title_text {
+    display: inline-block;
+}
+
+.title_text.animate {
+    animation: titleIn 0.9s ease forwards;
+}
+
+@keyframes titleIn {
+    0%   { opacity: 0; transform: translateY(40px); letter-spacing: 20px; }
+    100% { opacity: 1; transform: translateY(0);    letter-spacing: 8px; }
+}
+
+/* ---------- SWITCH (wooden rune plate + magic crystal orb) ---------- */
+.switch {
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+    width: 150px;
+    height: 150px;
+    background:
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.12) 0 2px, transparent 2px 14px),
+        linear-gradient(#6b4423, #4a2e16, #6b4423);                 /* old wood */
+    border: 3px solid #24140a;
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 40px 10px rgba(100, 120, 255, 0.5),             /* calm blue glow */
+                inset 0 0 0 3px #8a5a2e;
+    z-index: 10;
+    transition: box-shadow 0.5s ease;
+}
+
+.on .switch {
+    box-shadow: 0 0 40px 10px rgba(255, 140, 0, 0.7),               /* fire orange glow */
+                inset 0 0 0 3px #8a5a2e;
+}
+
+/* the crystal orb (the button you click) */
+.switch .btn {
+    position: relative;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    border: 3px solid #1a0f06;
+    cursor: pointer;
+    overflow: hidden;
+    background: radial-gradient(circle at 35% 30%, #ffffff 0%, #9fb2ff 22%, #3a4bd1 55%, #0e1445 100%);   /* calm blue orb */
+    box-shadow: 0 0 18px 4px rgba(90, 110, 255, 0.8), inset -6px -8px 14px rgba(0, 0, 40, 0.6);
+    transition: transform 0.15s ease, box-shadow 0.5s ease;
+    animation: orbPulse 3s ease-in-out infinite;
+}
+
+.switch .btn:active {
+    transform: scale(0.92);
+}
+
+/* fire version of the orb fades in over the blue one */
+.switch .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff8c4 0%, #ffc43a 25%, #ff5a14 60%, #6a0f0f 100%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.on .switch .btn::before {
+    opacity: 1;
+}
+
+/* little magic star floating inside the orb */
+.switch .btn::after {
+    content: "\2726";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow: 0 0 8px #fff;
+    animation: twinkle 2s ease-in-out infinite;
+}
+
+.on .switch .btn {
+    box-shadow: 0 0 22px 6px rgba(255, 130, 20, 0.9), inset -6px -8px 14px rgba(80, 0, 0, 0.5);
+}
+
+@keyframes orbPulse {
+    0%, 100% { filter: brightness(1); }
+    50%      { filter: brightness(1.25); }
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.8) rotate(0deg); }
+    50%      { opacity: 1;   transform: translate(-50%, -50%) scale(1.1) rotate(25deg); }
+}
+
+/* ON / OFF text (carved into the wood) */
+.switch span {
+    position: absolute;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 1px;
+    transition: color 0.3s ease, transform 0.3s ease;
+    color: #a98a64;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.7);
+}
+
+.bulb_on_status {
+    top: 10px;
+}
+
+.bulb_off_status {
+    bottom: 10px;
+}
+
+.on .bulb_on_status {
+    color: #ffb02e;
+    transform: scale(1.3);
+}
+
+body:not(.on) .bulb_off_status {
+    color: #9fb2ff;
+    transform: scale(1.3);
+}
+
+/* ---------- AUDIO ---------- */
+audio {
+    display: none;
+}

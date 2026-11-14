@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wizard Resting & Powers Mode</title>
+    <link rel="stylesheet" href="act.css">
+</head>
+<body>
+
+    <!-- Wizard scene -->
+    <div class="scene">
+
+        <div class="stage">
+
+            <!-- Glow behind the wizard (shows when powers are ON) -->
+            <div class="aura"></div>
+
+            <!-- Floating rocks BEHIND the wizard (shows when powers are ON) -->
+            <div class="rocks">
+                <span class="rock" style="--x:8%;  --y:14%; --s:2.2vh; --dur:3.2s; --amp:-2.5vh; --rot:20deg;  --delay:0s;"><i></i></span>
+                <span class="rock" style="--x:16%; --y:38%; --s:1.4vh; --dur:2.6s; --amp:-2vh;   --rot:-25deg; --delay:0.1s;"><i></i></span>
+                <span class="rock" style="--x:28%; --y:4%;  --s:1.2vh; --dur:3.8s; --amp:-3vh;   --rot:15deg;  --delay:0.2s;"><i></i></span>
+                <span class="rock" style="--x:88%; --y:22%; --s:1.8vh; --dur:3s;   --amp:-2.5vh; --rot:-20deg; --delay:0.15s;"><i></i></span>
+                <span class="rock" style="--x:93%; --y:42%; --s:1.2vh; --dur:2.8s; --amp:-2vh;   --rot:30deg;  --delay:0.25s;"><i></i></span>
+                <span class="rock" style="--x:78%; --y:5%;  --s:1.4vh; --dur:3.5s; --amp:-3vh;   --rot:-15deg; --delay:0.3s;"><i></i></span>
+                <span class="rock" style="--x:4%;  --y:62%; --s:1.6vh; --dur:3.4s; --amp:-2.5vh; --rot:25deg;  --delay:0.35s;"><i></i></span>
+                <span class="rock" style="--x:90%; --y:68%; --s:1.5vh; --dur:2.9s; --amp:-2vh;   --rot:-30deg; --delay:0.05s;"><i></i></span>
+                <span class="rock" style="--x:84%; --y:86%; --s:1vh;   --dur:3.6s; --amp:-3vh;   --rot:20deg;  --delay:0.4s;"><i></i></span>
+            </div>
+
+            <!-- PUT YOUR RESTING WIZARD IMAGE HERE (shows when powers are OFF) -->
+            <img class="wizard wizard_rest" src="images/Resting_Pixel_Wizard_Sprite-removebg-preview.png" alt="Wizard Resting">
+
+            <!-- PUT YOUR POWERS WIZARD IMAGE HERE (shows when powers are ON) -->
+            <img class="wizard wizard_power" src="images/Pixel_Rogue_in_Green_Hood.png" alt="Wizard Powers">
+
+            <!-- Sleeping Z's (shows when powers are OFF) -->
+            <div class="zzz">
+                <span style="--x:0vh; --fs:2.4vh; --delay:0s;">Z</span>
+                <span style="--x:2vh; --fs:3.2vh; --delay:1.2s;">Z</span>
+                <span style="--x:4vh; --fs:4vh;   --delay:2.4s;">Z</span>
+            </div>
+
+            <!-- Fire in the hands (shows when powers are ON) -->
+            <div class="fire fire_left"  id="fire_left"></div>
+            <div class="fire fire_right" id="fire_right"></div>
+        </div>
+
+        <!-- Flash effect when switching -->
+        <div class="flash"></div>
+    </div>
+
+    <!-- Title that changes with the mode -->
+    <h1 class="title">
+        <span class="title_text" id="title_text">WIZARD RESTING</span>
+    </h1>
+
+    <!-- Switch: a magic crystal orb on a wooden rune plate -->
+    <div class="switch">
+        <div class="btn" id="btn" title="Touch the orb"></div>
+        <span class="bulb_on_status">POWERS ON</span>
+        <span class="bulb_off_status">POWERS OFF</span>
+    </div>
+
+    <!-- Click sound -->
+    <audio src="src/button.mp3" id="audio"></audio>
+
+    <!-- PUT YOUR SLEEP MUSIC HERE (replace src/sleep-music.mp3) -->
+    <audio src="sound/mollyroselee-a-person-snoring-468533.mp3" id="sleep_music" loop autoplay></audio>
+
+    <!-- PUT YOUR ACTIVE MUSIC HERE (replace src/active-music.mp3) -->
+    <audio src="sound/wizard_fire_magic_5min_extended (mp3cut.net).mp3" id="active_music" loop></audio>
+
+    <script src="act.js"></script>
+</body>
+</html>
